@@ -4,9 +4,9 @@ namespace GrowiEfDemo.Commands;
 
 public static class CreateContract
 {
-    public record Request(decimal Rate);
+    public record Request(decimal Rate, int RateMode);
 
-    public record Response(string Key, decimal Rate);
+    public record Response(string Key, decimal Rate, int RateMode);
 
     public class Handler(DemoDbContext dbContext) : Endpoint<Request, Response>
     {
@@ -18,10 +18,10 @@ public static class CreateContract
 
         public override async Task HandleAsync(Request request, CancellationToken ct)
         {
-            var contract = new Contract(0, GenRandomKey(6), request.Rate);
+            var contract = new Contract(0, GenRandomKey(6), request.Rate, request.RateMode);
             dbContext.Contracts.Add(contract);
             await dbContext.SaveChangesAsync(ct);
-            await Send.ResponseAsync(new Response(contract.Key, contract.Rate), cancellation: ct);
+            await Send.ResponseAsync(new Response(contract.Key, contract.Rate, contract.RateMode), cancellation: ct);
         }
         
         private string GenRandomKey(int length) => 
