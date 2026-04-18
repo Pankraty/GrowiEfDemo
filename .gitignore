@@ -1,0 +1,24 @@
+.git
+.vs
+.cache
+.history
+data/*
+
+[Bb]in
+[Oo]bj
+[Ll]og
+[Pp]ackages
+[Pp]kg
+[Oo]utput
+
+## Build artifacts
+build/tools/*
+build/TestResult.xml
+
+## Local project layout settings
+*.DotSettings.user
+*.csproj.user
+*.sfproj.user
+
+*.xml
+*/.idea/
