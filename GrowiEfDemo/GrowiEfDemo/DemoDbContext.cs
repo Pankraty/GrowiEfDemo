@@ -14,27 +14,6 @@ public class DemoDbContext(DbContextOptions<DemoDbContext> options) : DbContext(
         modelBuilder.HasDbFunction(
             typeof(FullTextFunctions).GetMethod(nameof(FullTextFunctions.WebSearchToPrefixedTsQuery))!,
             b => b.HasName("websearch_to_prefixed_tsquery"));
-        
-        modelBuilder.Entity<Contract>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.Key).IsUnique();
-        });
-
-        modelBuilder.Entity<Company>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-
-            entity.Property(p => p.SearchVector)
-                .IsRequired()
-                .HasComputedColumnSql("""
-                                      to_tsvector('simple', "Ogrn") ||
-                                      to_tsvector('simple', "Inn") ||
-                                      to_tsvector('simple', "Name")
-                                      """, stored: true);
-
-            entity.HasIndex(p => p.SearchVector)
-                .HasMethod("GIN");
-        });
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(DemoDbContext).Assembly);
     }
 }
