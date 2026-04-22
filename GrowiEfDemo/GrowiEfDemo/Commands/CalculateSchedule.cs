@@ -50,6 +50,7 @@ public static class CalculateSchedule
                 {
                     RateMode.Yearly => rate / 12 / 100,
                     RateMode.Monthly => rate / 100,
+                    RateMode.Weekly => rate / 7 * 30 / 100,
                     RateMode.Daily => rate * 30 / 100,
                     _ => throw new ArgumentOutOfRangeException(nameof(rateMode), rateMode, "Unknown rate mode")
                 };

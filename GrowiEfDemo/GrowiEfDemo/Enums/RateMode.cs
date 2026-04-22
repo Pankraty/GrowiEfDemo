@@ -3,5 +3,6 @@ public enum RateMode
 {
     Yearly = 0,
     Monthly = 1,
-    Daily = 2
+    Weekly = 3,
+    Daily = 2,
 }
