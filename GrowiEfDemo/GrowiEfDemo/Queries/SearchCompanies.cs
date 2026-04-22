@@ -26,11 +26,11 @@ public static class SearchCompanies
             var query = dbContext.Companies.AsNoTracking();
             if (!string.IsNullOrEmpty(request.SearchText))
             {
-                var searchText = request.SearchText.ToLower();
-                query = query.Where(c => 
-                    c.Name.ToLower().Contains(searchText) ||
-                    c.Inn.ToLower().StartsWith(searchText) ||
-                    c.Ogrn.ToLower().StartsWith(searchText));
+                var searchParts = request.SearchText.ToLower().Split(" ");
+                query = query.Where(c =>
+                    searchParts.All(p => c.Name.ToLower().Contains(p)) ||
+                    searchParts.Any(p => c.Inn.ToLower().StartsWith(p)) ||
+                    searchParts.Any(p => c.Ogrn.ToLower().StartsWith(p)));
             }
             var totalCount = await query.CountAsync(ct);
             var companies = await query.OrderBy(c => c.Id)
