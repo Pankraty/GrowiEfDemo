@@ -27,7 +27,7 @@ public static class SearchCompanies
             if (!string.IsNullOrEmpty(request.SearchText))
             {
                 query = query.Where(c => c.SearchVector.Matches(
-                    EF.Functions.WebSearchToTsQuery("simple", request.SearchText)));
+                    FullTextFunctions.WebSearchToPrefixedTsQuery(request.SearchText)));
             }
             var totalCount = await query.CountAsync(ct);
             var companies = await query.OrderBy(c => c.Id)
