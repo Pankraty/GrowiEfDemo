@@ -1,3 +1,5 @@
+using NpgsqlTypes;
+
 namespace GrowiEfDemo;
 
 public class Company
@@ -6,4 +8,5 @@ public class Company
     public string Name { get; init; } = "";
     public string Inn { get; init; } = "";
     public string Ogrn { get; init; } = "";
+    public NpgsqlTsVector SearchVector { get; private set; } = null!;
 }

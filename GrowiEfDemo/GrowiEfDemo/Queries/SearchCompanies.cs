@@ -26,11 +26,8 @@ public static class SearchCompanies
             var query = dbContext.Companies.AsNoTracking();
             if (!string.IsNullOrEmpty(request.SearchText))
             {
-                var searchParts = request.SearchText.ToLower().Split(" ");
-                query = query.Where(c =>
-                    searchParts.All(p => c.Name.ToLower().Contains(p)) ||
-                    searchParts.Any(p => c.Inn.ToLower().StartsWith(p)) ||
-                    searchParts.Any(p => c.Ogrn.ToLower().StartsWith(p)));
+                query = query.Where(c => c.SearchVector.Matches(
+                    EF.Functions.WebSearchToTsQuery("simple", request.SearchText)));
             }
             var totalCount = await query.CountAsync(ct);
             var companies = await query.OrderBy(c => c.Id)
