@@ -19,6 +19,7 @@ namespace GrowiEfDemo.Migrations
                 .HasAnnotation("ProductVersion", "10.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "rate_mode", new[] { "daily", "monthly", "yearly" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("GrowiEfDemo.Contract", b =>
@@ -36,8 +37,8 @@ namespace GrowiEfDemo.Migrations
                     b.Property<decimal>("Rate")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("RateMode")
-                        .HasColumnType("integer");
+                    b.Property<RateMode>("RateMode")
+                        .HasColumnType("rate_mode");
 
                     b.HasKey("Id");
 

@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GrowiEfDemo.Migrations
 {
     [DbContext(typeof(DemoDbContext))]
-    [Migration("20260422070135_AddRateMode")]
-    partial class AddRateMode
+    [Migration("20260422071221_AddRateModeEnum")]
+    partial class AddRateModeEnum
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,6 +22,7 @@ namespace GrowiEfDemo.Migrations
                 .HasAnnotation("ProductVersion", "10.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "rate_mode", new[] { "daily", "monthly", "yearly" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("GrowiEfDemo.Contract", b =>
@@ -39,8 +40,8 @@ namespace GrowiEfDemo.Migrations
                     b.Property<decimal>("Rate")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("RateMode")
-                        .HasColumnType("integer");
+                    b.Property<RateMode>("RateMode")
+                        .HasColumnType("rate_mode");
 
                     b.HasKey("Id");
 

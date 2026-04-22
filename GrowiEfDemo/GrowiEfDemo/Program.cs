@@ -19,7 +19,8 @@ builder.Services.AddSingleton<ISerializerDataContractResolver>(sp =>
 
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("Default"));
 var dataSource = dataSourceBuilder.Build();
-builder.Services.AddDbContext<DemoDbContext>(opt => opt.UseNpgsql(dataSource));
+builder.Services.AddDbContext<DemoDbContext>(opt => opt.UseNpgsql(dataSource, 
+    npgsql => npgsql.MapEnum<RateMode>()));
 
 var app = builder.Build();
 
