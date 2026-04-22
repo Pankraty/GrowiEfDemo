@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;
+using Npgsql.NameTranslation;
 using Scalar.AspNetCore;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -20,7 +21,7 @@ builder.Services.AddSingleton<ISerializerDataContractResolver>(sp =>
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("Default"));
 var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<DemoDbContext>(opt => opt.UseNpgsql(dataSource, 
-    npgsql => npgsql.MapEnum<RateMode>()));
+    npgsql => npgsql.MapEnum<RateMode>(nameTranslator: new NpgsqlNullNameTranslator())));
 
 var app = builder.Build();
 

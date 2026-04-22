@@ -6,18 +6,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GrowiEfDemo.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRateModeEnum : Migration
+    public partial class AddRateModeEnumWithTranslator : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:rate_mode", "daily,monthly,yearly");
+                .Annotation("Npgsql:Enum:RateMode", "Yearly,Monthly,Daily");
 
             migrationBuilder.AddColumn<RateMode>(
                 name: "RateMode",
                 table: "Contracts",
-                type: "rate_mode",
+                type: "\"RateMode\"",
                 nullable: false,
                 defaultValue: RateMode.Yearly);
         }
@@ -30,7 +30,7 @@ namespace GrowiEfDemo.Migrations
                 table: "Contracts");
 
             migrationBuilder.AlterDatabase()
-                .OldAnnotation("Npgsql:Enum:rate_mode", "daily,monthly,yearly");
+                .OldAnnotation("Npgsql:Enum:RateMode", "Yearly,Monthly,Daily");
         }
     }
 }
