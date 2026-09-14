@@ -11,6 +11,9 @@ public class DemoDbContext(DbContextOptions<DemoDbContext> options) : DbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresEnum<RateMode>(nameTranslator: new NpgsqlNullNameTranslator());
+        modelBuilder.HasDbFunction(
+            typeof(FullTextFunctions).GetMethod(nameof(FullTextFunctions.WebSearchToPrefixedTsQuery))!,
+            b => b.HasName("websearch_to_prefixed_tsquery"));
         
         modelBuilder.Entity<Contract>(entity =>
         {
