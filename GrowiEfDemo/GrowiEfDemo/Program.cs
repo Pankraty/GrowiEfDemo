@@ -1,13 +1,15 @@
 global using GrowiEfDemo;
 using System.Text.Json.Serialization;
 using FastEndpoints;
+using GrowiEfExtensions;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using Npgsql.NameTranslation;
 using Scalar.AspNetCore;
 using Swashbuckle.AspNetCore.SwaggerGen;
+[assembly: DesignTimeServicesReference("GrowiEfExtensions.CustomDesignTimeServices, GrowiEfExtensions")]
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -20,8 +22,9 @@ builder.Services.AddSingleton<ISerializerDataContractResolver>(sp =>
 
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("Default"));
 var dataSource = dataSourceBuilder.Build();
-builder.Services.AddDbContext<DemoDbContext>(opt => opt.UseNpgsql(dataSource, 
-    npgsql => npgsql.MapEnum<RateMode>(nameTranslator: new NpgsqlNullNameTranslator())));
+builder.Services.AddDbContext<DemoDbContext>(opt => opt.UseNpgsql(dataSource, npgsql => npgsql.MapAllConfiguredEnums(typeof(DemoDbContext).Assembly)))
+    .Configure<DemoDbContext>()
+    .RegisterAllConfigurationsFromAssembly<DemoDbContext>();
 
 var app = builder.Build();
 
