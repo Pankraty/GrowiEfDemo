@@ -6,9 +6,7 @@ namespace GrowiEfDemo.Queries;
 public static class SearchCompanies
 {
     public record Request(
-        string? Name,
-        string? Inn,
-        string? Ogrn,
+        string? SearchText,
         int Limit = 50,
         int Offset = 0);
 
@@ -26,17 +24,10 @@ public static class SearchCompanies
         public override async Task HandleAsync(Request request, CancellationToken ct)
         {
             var query = dbContext.Companies.AsNoTracking();
-            if (!string.IsNullOrEmpty(request.Name))
+            if (!string.IsNullOrEmpty(request.SearchText))
             {
-                query = query.Where(c => c.Name == request.Name);
-            }
-            if (!string.IsNullOrEmpty(request.Inn))
-            {
-                query = query.Where(c => c.Inn == request.Inn);
-            }
-            if (!string.IsNullOrEmpty(request.Ogrn))
-            {
-                query = query.Where(c => c.Ogrn == request.Ogrn);
+                query = query.Where(c => c.SearchVector.Matches(
+                    EF.Functions.WebSearchToTsQuery("simple", request.SearchText)));
             }
             var totalCount = await query.CountAsync(ct);
             var companies = await query.OrderBy(c => c.Id)

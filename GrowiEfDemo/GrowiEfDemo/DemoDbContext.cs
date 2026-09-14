@@ -21,9 +21,17 @@ public class DemoDbContext(DbContextOptions<DemoDbContext> options) : DbContext(
         modelBuilder.Entity<Company>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.Name);
-            entity.HasIndex(e => e.Inn);
-            entity.HasIndex(e => e.Ogrn);
+
+            entity.Property(p => p.SearchVector)
+                .IsRequired()
+                .HasComputedColumnSql("""
+                                      to_tsvector('simple', "Ogrn") ||
+                                      to_tsvector('simple', "Inn") ||
+                                      to_tsvector('simple', "Name")
+                                      """, stored: true);
+
+            entity.HasIndex(p => p.SearchVector)
+                .HasMethod("GIN");
         });
     }
 }
