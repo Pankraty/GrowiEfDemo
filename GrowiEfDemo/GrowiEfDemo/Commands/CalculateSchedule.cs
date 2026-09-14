@@ -36,16 +36,24 @@ public static class CalculateSchedule
                 return;
             }
 
-            var installments = CalculateInstallments(request.StartDate, request.NumberOfInstallments, request.Amount, contract.Rate);
+            var installments = CalculateInstallments(request.StartDate, request.NumberOfInstallments, 
+                request.Amount, contract.Rate, contract.RateMode);
             
             await Send.ResponseAsync(new Response(installments), cancellation: ct);
         }
 
         private static Installment[] CalculateInstallments(DateOnly startDate, int numberOfInstallments,
-            decimal amount, decimal rate)
+            decimal amount, decimal rate, RateMode rateMode)
         {
             var installments = new Installment[numberOfInstallments];
-            var monthlyRate = rate / 12 / 100;
+            var monthlyRate = rateMode switch
+                {
+                    RateMode.Yearly => rate / 12 / 100,
+                    RateMode.Monthly => rate / 100,
+                    RateMode.Weekly => rate / 7 * 30 / 100,
+                    RateMode.Daily => rate * 30 / 100,
+                    _ => throw new ArgumentOutOfRangeException(nameof(rateMode), rateMode, "Unknown rate mode")
+                };
 
             #region Unnecessary details
             var annuityCoefficient = monthlyRate * (1m + 1m / (Pow(1m + monthlyRate, numberOfInstallments) - 1m));

@@ -1,2 +1,2 @@
 namespace GrowiEfDemo;
-public record Contract(int Id, string Key, decimal Rate);
+public record Contract(int Id, string Key, decimal Rate, RateMode RateMode);

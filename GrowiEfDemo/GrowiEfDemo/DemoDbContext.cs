@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql.NameTranslation;
+
 namespace GrowiEfDemo;
 
 public class DemoDbContext(DbContextOptions<DemoDbContext> options) : DbContext(options)
@@ -7,6 +9,8 @@ public class DemoDbContext(DbContextOptions<DemoDbContext> options) : DbContext(
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasPostgresEnum<RateMode>(nameTranslator: new NpgsqlNullNameTranslator());
+        
         modelBuilder.Entity<Contract>(entity =>
         {
             entity.HasKey(e => e.Id);
